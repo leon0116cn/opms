@@ -1,17 +1,29 @@
 import type { ReactNode } from 'react';
 
-const navigation = [
+export type Route = 'annual-plan' | 'scheme-template';
+
+interface AppLayoutProps {
+  route: Route;
+  onNavigate: (route: Route) => void;
+  children: ReactNode;
+}
+
+const navigation: Array<{
+  label: string;
+  children: Array<{ label: string; route: Route }>;
+}> = [
   {
     label: '方案管理',
     children: [
-      { label: '年度考核计划', href: '#', active: true },
+      { label: '年度考核计划', route: 'annual-plan' },
+      { label: '方案模板', route: 'scheme-template' },
     ],
   },
   { label: '过程跟踪', children: [] },
   { label: '绩效评价', children: [] },
 ];
 
-export default function AppLayout({ children }: { children: ReactNode }) {
+export default function AppLayout({ route, onNavigate, children }: AppLayoutProps) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -21,13 +33,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <div className="menu-group" key={item.label}>
               <div className="menu-title">{item.label}</div>
               {item.children.map((child) => (
-                <a
-                  className={child.active ? 'menu-item active' : 'menu-item'}
-                  href={child.href}
+                <button
+                  className={route === child.route ? 'menu-item active' : 'menu-item'}
+                  onClick={() => onNavigate(child.route)}
                   key={child.label}
+                  type="button"
                 >
                   {child.label}
-                </a>
+                </button>
               ))}
             </div>
           ))}
